@@ -2,6 +2,7 @@
 package logica;
 
 import Gráfico.Graficos;
+import Gráfico.Pantalla;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Dimension;
@@ -9,8 +10,6 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -32,10 +31,10 @@ public abstract class Animacion extends Canvas implements Runnable{
     
     protected int contador;//se quitará después
     
-    protected Graficos grafo;
+    protected Pantalla grafo;
 
     public Animacion() {
-        this.grafo = new Graficos("/PruebaDosColores.png");
+        
         this.ANCHO = 160;
         this.ALTO = (this.ANCHO)/12*9;
         this.ESCALA = 3;
@@ -54,15 +53,19 @@ public abstract class Animacion extends Canvas implements Runnable{
     }
     
     protected final void DefaultPantalla() {
-        ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ventana.setLayout(new BorderLayout());
+        this.ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.ventana.setLayout(new BorderLayout());
         
-        ventana.add(this,BorderLayout.CENTER);
-        ventana.pack();
+        this.ventana.add(this,BorderLayout.CENTER);
+        this.ventana.pack();
         
-        ventana.setResizable(false);
-        ventana.setLocationRelativeTo(null);
-        ventana.setVisible(true);
+        this.ventana.setResizable(false);
+        this.ventana.setLocationRelativeTo(null);
+        this.ventana.setVisible(true);
+    }
+    
+    public final void iniPantalla() {
+        grafo = new Pantalla(ANCHO,ALTO,new Graficos("/PruebaDosColores.png"));
     }
     
     public synchronized void iniciar() {
@@ -85,6 +88,8 @@ public abstract class Animacion extends Canvas implements Runnable{
         long temporizador = System.currentTimeMillis();
         double tiempoTrans = 0;
         
+        this.iniPantalla();
+        
         while(this.running){            
             long ahora = System.nanoTime();
             tiempoTrans += (ahora - tiempo)/ranPorA;
@@ -96,14 +101,8 @@ public abstract class Animacion extends Canvas implements Runnable{
                 tiempoTrans--;
             }
             
-            try {
-                Thread.sleep(2);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Animacion.class.getName()).log(Level.SEVERE,null,ex);
-            } finally {
-                cuadros++;
-                this.cuadro();
-            }
+            cuadros++;
+            this.cuadro();            
             
             if (System.currentTimeMillis()- temporizador >= 1000) {
                 temporizador += 1000;
@@ -122,11 +121,13 @@ public abstract class Animacion extends Canvas implements Runnable{
             return;
         }
         
+        this.grafo.cuadro(this.pixls, 0, this.ANCHO);
+        
         Graphics graph = bs.getDrawGraphics();
         
 //        graph.setColor(Color.CYAN);
 //        graph.fillRect(0, 0, getWidth(), getHeight());
-        
+
         graph.drawImage(image, 0, 0, getWidth(),getHeight(), null);
         
         graph.dispose();
@@ -135,9 +136,9 @@ public abstract class Animacion extends Canvas implements Runnable{
 
     protected void actualizacion() {
                
-        for (int i = 0; i < this.pixls.length; i++) {
-            this.pixls[i] = i + this.contador;
-        }
+//        for (int i = 0; i < this.pixls.length; i++) {
+//            this.pixls[i] = i + this.contador;
+//        }
         
     }        
 
@@ -201,11 +202,11 @@ public abstract class Animacion extends Canvas implements Runnable{
         this.contador = contador;
     }
 
-    public Graficos getGrafo() {
+    public Pantalla getGrafo() {
         return grafo;
     }
 
-    public void setGrafo(Graficos grafo) {
+    public void setGrafo(Pantalla grafo) {
         this.grafo = grafo;
     }
     
