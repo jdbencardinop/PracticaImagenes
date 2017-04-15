@@ -27,6 +27,8 @@ public class AnimacionMain extends Animacion{
     public void actualizacion() {
         
 //        this.contador++;
+//        this.getGrafo().setxOffset(this.getContador());
+//        this.getGrafo().setyOffset(this.getContador());
         
 //        switch(0){
 //            

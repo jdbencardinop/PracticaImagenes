@@ -40,10 +40,10 @@ public class Graficos {
             for (int i = 0; i < this.pixls.length; i++) {
                 this.pixls[i] = (this.pixls[i] & 0xff)/64;
             }
-            
-            for (int i = 0; i < 8; i++) {
-                System.out.println(this.pixls[i]);
-            }
+//            
+//            for (int i = 0; i < 8; i++) {
+//                System.out.println(this.pixls[i]);
+//            }
         }
     } 
 
